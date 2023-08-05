@@ -65,3 +65,34 @@ export async function backrunAttempt(
     console.log("err", e);
   }
 }
+
+export async function backrunAttemptTriple(
+  tx: ContractTransaction,
+  nonce: number,
+  currentBlockNumber: number,
+  pendingTxHash: string
+) {
+  const backrunSignedTx0 = await getSignedBackrunTx(executorWallet, tx, nonce);
+  const backrunSignedTx1 = await getSignedBackrunTx(executorWallet, tx, nonce + 1);
+  const backrunSignedTx2 = await getSignedBackrunTx(executorWallet, tx, nonce + 2);
+  try {
+    const sendBundleResult = await mevshare.sendBundle({
+      inclusion: { block: currentBlockNumber + 1 },
+      body: [
+        { 
+          bundle: {
+            inclusion: { block: currentBlockNumber + 1 },
+            body: [
+              { hash: pendingTxHash },
+              { tx: backrunSignedTx0, canRevert: false },
+              { tx: backrunSignedTx1, canRevert: false },
+              { tx: backrunSignedTx2, canRevert: false },
+            ]
+        } }
+      ],
+    });
+    console.log("Bundle Hash: " + sendBundleResult.bundleHash);
+  } catch (e) {
+    console.log("err", e);
+  }
+}

@@ -5,7 +5,7 @@ async function main() {
   console.log("mev-share auth address: " + authSigner.address);
   console.log("executor address: " + executorWallet.address);
 
-  await flags.claimFlag7_8();
+  await flags.claimFlag9();
 }
 
 main()
