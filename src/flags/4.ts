@@ -14,7 +14,6 @@ export async function claimFlag4() {
 
   mevshare.on(StreamEventType.Transaction, async (pendingTx: IPendingTransaction) => {
     const currentBlockNumber = await provider.getBlockNumber()
-    // data: {"logs":null,"txs":null,"mevGasPrice":"0x2faf080","gasUsed":"0x7530"}
     if (!pendingTx || !pendingTx.logs) { return }
 
     const lowerBound = parseInt(pendingTx.logs[0].data.slice(2, 66), 16)
